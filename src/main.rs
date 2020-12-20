@@ -1,6 +1,7 @@
 use std::env;
 use std::process;
 mod day1;
+mod day2;
 
 
 fn print_help() {
@@ -10,6 +11,7 @@ fn print_help() {
 fn run(a: i32) {
     match a {
         1 => day1::run(),
+        2 => day2::run(),
         _ => println!("Not found")
     }
 }
