@@ -3,6 +3,7 @@ use std::process;
 mod day1;
 mod day2;
 mod day3;
+mod day5;
 
 fn print_help() {
     println!("Run using advent_of_code --day day")
@@ -13,6 +14,7 @@ fn run(a: i32) {
         1 => day1::run(),
         2 => day2::run(),
         3 => day3::run(),
+        5 => day5::run(),
         _ => println!("Not found")
     }
 }
