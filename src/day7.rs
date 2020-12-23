@@ -95,7 +95,7 @@ fn solve(a: Vec<String>) -> i32 {
     let mut stack = VecDeque::new();
     stack.push_front((source_index, 1));
     let mut fin = 0;
-    while(!stack.is_empty()) {
+    while !stack.is_empty() {
         match stack.pop_front() {
             Some((y, value)) => {
                 for i in &graph.edges[*y] {
