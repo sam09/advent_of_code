@@ -14,6 +14,7 @@ mod day11;
 mod day13;
 mod day14;
 mod day16;
+mod day17;
 mod day12;
 mod day15;
 
@@ -39,6 +40,7 @@ fn run(a: i32) {
         14 => day14::run(),
         15 => day15::run(),
         16 => day16::run(),
+        17 => day17::run(),
         _ => println!("Not found")
     }
 }

@@ -145,7 +145,7 @@ fn solve(a: Vec<String>) -> i64 {
     let mut prod = 1;
     for (key, value) in mapping {
         match value.find("departure") {
-            Some(v) => {
+            Some(_) => {
                 prod *= own_ticket[key] as i64;
             },
             None => ()
