@@ -48,7 +48,7 @@ fn gcd(a: &BigInt, b: &BigInt) -> (BigInt, BigInt) {
 }
 
 fn inverse(b: &BigInt, m: &BigInt) -> BigInt {
-    let (x, y) = gcd(b, m);
+    let (x, _) = gcd(b, m);
     (x % m + m)%m
 }
 

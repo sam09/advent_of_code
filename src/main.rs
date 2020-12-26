@@ -14,6 +14,7 @@ mod day11;
 mod day13;
 mod day14;
 mod day12;
+mod day15;
 
 fn print_help() {
     println!("Run using advent_of_code --day day")
@@ -35,6 +36,7 @@ fn run(a: i32) {
         12 => day12::run(),
         13 => day13::run(),
         14 => day14::run(),
+        15 => day15::run(),
         _ => println!("Not found")
     }
 }

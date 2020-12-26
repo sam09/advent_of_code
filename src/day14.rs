@@ -1,8 +1,6 @@
-extern crate regex;
 use std::fs::File;
 use std::io::{self, BufReader, BufRead};
 use std::collections::HashMap;
-use regex::Regex;
 
 
 fn read_input()-> io::Result<Vec<String>> {
