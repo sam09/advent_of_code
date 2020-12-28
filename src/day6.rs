@@ -15,7 +15,7 @@ fn read_input()-> io::Result<Vec<String>> {
 
 
 fn solve_pt1(a: Vec<String>) -> usize {
-    let mut set:HashSet::<char> = HashSet::new();
+    let mut set:HashSet<char> = HashSet::new();
     let mut sum = 0;
     for i in a {
         if i.is_empty() {

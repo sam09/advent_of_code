@@ -32,7 +32,7 @@ fn and_recursive_11<'a>(map: &HashMap<RuleId, Rule>, input: &'a str, tail: i32) 
     let mut tp = input.clone();
     let rule42 = &map[&42];
     let rule31 = &map[&31];
-    match rule42.match_rule(tp, map) {
+    return match rule42.match_rule(tp, map) {
         Err(e) => {
             let mut i = 0;
             while i < tail {
@@ -43,16 +43,16 @@ fn and_recursive_11<'a>(map: &HashMap<RuleId, Rule>, input: &'a str, tail: i32) 
                 i += 1;
             }
             if i == tail {
-                return Ok(tp);
+                Ok(tp)
             } else {
-                return Err(e);
+                Err(e)
             }
         },
         Ok(v) => {
             if v.is_empty() {
-                return Err(());
+                Err(())
             } else {
-                return and_recursive_11(map, v, tail+1);
+                and_recursive_11(map, v, tail + 1)
             }
         }
     }
@@ -92,10 +92,10 @@ impl Rule {
             },
             RuleType::Compound(v) => and(&v, map, input),
             RuleType::Complex(a, b) => {
-                if self.rule_id == 11 {
-                    return and_recursive_11(map, input, 0);
+                return if self.rule_id == 11 {
+                    and_recursive_11(map, input, 0)
                 } else {
-                    return or(&a, &b, map, input);
+                    or(&a, &b, map, input)
                 }
             }
         }
@@ -125,7 +125,7 @@ fn parse_rule(a: &str) -> Rule {
             }
         }
     };
-    Rule{rule_id: rule_id, rule: rule_type}
+    Rule{rule_id, rule: rule_type}
 }
 
 fn solve(a: Vec<String>) -> i64 {
