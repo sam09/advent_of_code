@@ -1,21 +1,9 @@
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::{HashMap, HashSet};
-
-fn read_input()-> io::Result<Vec<String>> {
-    //let filename = "./data/test";
-    let filename = "./data/day16.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().chars().collect()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 fn parse_rule(rule: &str) -> (i32, i32) {
-    let vals = rule.split("-").collect::<Vec<&str>>();
-    (vals[0].parse::<i32>().unwrap(), vals[1].parse::<i32>().unwrap())
+    let v = rule.split("-").collect::<Vec<&str>>();
+    (v[0].parse::<i32>().unwrap(), v[1].parse::<i32>().unwrap())
 }
 
 fn parse_arr(val: &str) -> Vec<i32> {
@@ -24,7 +12,7 @@ fn parse_arr(val: &str) -> Vec<i32> {
 }
 
 fn invalid(ticket: &Vec<i32>, rules: &HashMap<String, Vec<(i32, i32)>> ) -> Vec<i32> {
-    let mut vals = Vec::new();
+    let mut v = Vec::new();
 
     for i in ticket {
         let mut valid = false;
@@ -36,11 +24,10 @@ fn invalid(ticket: &Vec<i32>, rules: &HashMap<String, Vec<(i32, i32)>> ) -> Vec<
             }
         }
         if valid == false {
-            vals.push(*i);
-            //println!("{}", i);
+            v.push(*i);
         }
     }
-    vals
+    v
 }
 
 fn parse_input(a: Vec<String>) -> (HashMap<String, Vec<(i32, i32)>>, Vec<i32>, Vec<Vec<i32>>, i32) {
@@ -80,11 +67,11 @@ fn parse_input(a: Vec<String>) -> (HashMap<String, Vec<(i32, i32)>>, Vec<i32>, V
     let mut new_tickets = Vec::new();
     let mut sum = 0;
     for nearby_ticket in nearby_tickets {
-        let vals = invalid(&nearby_ticket, &all_rules);
-        if vals.len() == 0 {
+        let v = invalid(&nearby_ticket, &all_rules);
+        if v.len() == 0 {
             new_tickets.push(nearby_ticket);
         }
-        sum += vals.into_iter().fold(0, |a,b| a+b);
+        sum += v.into_iter().fold(0, |a,b| a+b);
     }
 
     (all_rules, own_ticket, new_tickets, sum)
@@ -99,7 +86,7 @@ fn is_valid(ticket: i32, rule: Vec<(i32, i32)>) -> bool {
     false
 }
 
-fn solve(a: Vec<String>) -> i64 {
+fn solve_pt2(a: Vec<String>) -> i64 {
     let (rules, own_ticket, new_tickets, _) = parse_input(a);
 
     let n = new_tickets.len();
@@ -153,10 +140,19 @@ fn solve(a: Vec<String>) -> i64 {
     }
     prod
 }
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+
+fn solve_pt1(a: Vec<String>) -> i64 {
+    let (_, _, _, sum) = parse_input(a);
+    sum as i64
+}
+
+pub fn run(part: char) {
+    let v = read_input_string("data/day16.txt");
+    match v {
+        Ok(values) =>{
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

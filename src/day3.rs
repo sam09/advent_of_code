@@ -1,17 +1,4 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
-
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day3.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 fn find_slope(a: &Vec<String>, right_inc: usize, down_inc: usize) -> i64 {
     let mut right = 0;
@@ -27,19 +14,23 @@ fn find_slope(a: &Vec<String>, right_inc: usize, down_inc: usize) -> i64 {
         down += down_inc;
         right = (right + right_inc)%str_n;
     }
-    println!("{}", trees);
     trees
 }
 
-fn solve(a: Vec<String>) {
-    let b:i64 = find_slope(&a, 1, 1) * find_slope(&a, 3, 1) * find_slope(&a, 5, 1) * find_slope(&a, 7, 1) * find_slope(&a, 1, 2);
-    println!("{}", b);
+fn solve(a: Vec<String>, part: char) -> i64{
+    return if part == 'b' {
+        find_slope(&a, 1, 1) * find_slope(&a, 3, 1)
+            * find_slope(&a, 5, 1) * find_slope(&a, 7, 1)
+            * find_slope(&a, 1, 2)
+    } else {
+        find_slope(&a, 3, 1)
+    }
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => solve(values),
+pub fn run(part: char) {
+    let v = read_input_string("data/day3.txt");
+    match v {
+        Ok(values) => println!("{}", solve(values, part)),
         _ => println!("error occurred parsing input")
     };
 }

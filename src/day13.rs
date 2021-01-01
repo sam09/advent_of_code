@@ -1,21 +1,8 @@
 extern crate num_bigint;
 extern crate num_traits;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
+use crate::utils::read_input_string;
 use num_bigint::{BigInt, ToBigInt};
 use num_traits::{Zero, One};
-
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day13.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().chars().collect()
-    } ).collect())
-}
-
 
 fn solve_pt1(a: Vec<String>) -> i32 {
     let earliest_time = a[0].parse::<i32>().unwrap();
@@ -34,7 +21,6 @@ fn solve_pt1(a: Vec<String>) -> i32 {
             min_v = tp;
             min_i = buses[i];
         }
-        println!("{}", tp);
     }
     min_v * min_i
 }
@@ -52,7 +38,7 @@ fn inverse(b: &BigInt, m: &BigInt) -> BigInt {
     (x % m + m)%m
 }
 
-fn solve(a: Vec<String>) {
+fn solve_pt2(a: Vec<String>) -> BigInt {
     let temp = a[1].split(",").collect::<Vec<&str>>();
     let mut buses = Vec::new();
     let mut prod: BigInt = One::one();
@@ -72,13 +58,19 @@ fn solve(a: Vec<String>) {
     }
     sum = sum % &prod;
     sum = &prod - sum;
-    println!("{}", sum);
+    sum
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => solve(values),
+pub fn run(part: char) {
+    let v = read_input_string("data/day13.txt");
+    match v {
+        Ok(values) => {
+            if part == 'a' {
+                println!("{}", solve_pt1(values));
+            } else {
+                println!("{}", solve_pt2(values));
+            };
+        }
         _ => println!("error occurred parsing input")
     };
 }

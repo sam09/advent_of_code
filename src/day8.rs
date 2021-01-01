@@ -1,19 +1,8 @@
 extern crate regex;
-use std::fs::File;
 use std::str::FromStr;
-use std::io::{self, BufReader, BufRead};
 use std::collections::HashSet;
 use std::convert::TryInto;
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day8.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 #[derive(Debug)]
 enum InstType {
@@ -54,7 +43,7 @@ fn create_instruction_set(a: Vec<String>) -> Vec<Inst> {
 }
 
 
-fn detect_for_infinte_loop(inst_set: &Vec<Inst>, p_counter: i32, n: i32, mut visited: HashSet<i32>, prev_val:i32) -> (bool, i32) {
+fn detect_for_infinite_loop(inst_set: &Vec<Inst>, p_counter: i32, n: i32, mut visited: HashSet<i32>, prev_val:i32) -> (bool, i32) {
     let mut acc = prev_val;
     let mut pc = p_counter;
     let mut flag = false;
@@ -80,7 +69,15 @@ fn detect_for_infinte_loop(inst_set: &Vec<Inst>, p_counter: i32, n: i32, mut vis
     (flag, acc)
 }
 
-fn solve(a: Vec<String>) -> i32 {
+fn solve_pt1(a: Vec<String>) -> i32 {
+    let inst_set = create_instruction_set(a);
+    let visited = HashSet::new();
+    let n = inst_set.len().try_into().unwrap();
+
+    detect_for_infinite_loop(&inst_set, 0, n, visited, 0).1
+}
+
+fn solve_pt2(a: Vec<String>) -> i32 {
     let inst_set = create_instruction_set(a);
     let mut visited = HashSet::new();
     let n = inst_set.len().try_into().unwrap();
@@ -98,7 +95,7 @@ fn solve(a: Vec<String>) -> i32 {
             },
             InstType::NOP => {
                 if pc + inst.value >= 0 && pc + inst.value < n {
-                    let (flag, acc_tp) = detect_for_infinte_loop(&inst_set, pc + inst.value, n, visited.clone(), acc);
+                    let (flag, acc_tp) = detect_for_infinite_loop(&inst_set, pc + inst.value, n, visited.clone(), acc);
                     if flag == false {
                         return acc_tp;
                     } else {
@@ -110,7 +107,7 @@ fn solve(a: Vec<String>) -> i32 {
 
             },
             InstType::JMP => {
-                let (flag, acc_tp) = detect_for_infinte_loop(&inst_set, pc + 1, n, visited.clone(), acc);
+                let (flag, acc_tp) = detect_for_infinite_loop(&inst_set, pc + 1, n, visited.clone(), acc);
                 if flag == false {
                     return acc_tp;
                 } else {
@@ -122,10 +119,13 @@ fn solve(a: Vec<String>) -> i32 {
     -1
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day8.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans)
+        }
         _ => println!("error occurred parsing input")
     };
 }

@@ -1,16 +1,4 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day12.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().chars().collect()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 fn f(pos: (i32, i32), v: i32, angle: i32) -> (i32, i32) {
     match angle {
@@ -65,7 +53,7 @@ fn rotate_point(pos: (i32, i32), angle: i32) -> (i32, i32) {
     }
 }
 
-fn solve(a: Vec<String>) -> u32 {
+fn solve_pt2(a: Vec<String>) -> u32 {
     let mut pos = (0, 0);
     let mut waypoint = (10, 1);
 
@@ -101,10 +89,13 @@ fn solve(a: Vec<String>) -> u32 {
     abs(pos.0) + abs(pos.1)
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day12.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

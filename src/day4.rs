@@ -1,35 +1,42 @@
 extern crate regex;
 use regex::Regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
+use crate::utils::read_input_string;
 
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day4.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap()
-    } ).collect())
-}
-
-
-fn solve(a: Vec<String>) -> usize {
+fn solve_pt1(a: Vec<String>) -> usize {
     let mut search = 0;
     let mut valid_passports = 0;
     let re = Regex::new(r"([a-zA-Z]+):([a-zA-Z0-9#]+)").unwrap();
-    /*let re = RegexSet::new(&[
-            r"(eyr):(202[0-9]|30)",
-            r"(byr):(19[2-9][0-9]|200[0-2])",
-            r"(iyr):(201[0-9][0-9]|20)",
-            r"(hcl):(#[0-9a-f]{6})",
-            r"(pid):([0-9]{9})"
-            r"(ecl):(amb|blu|brn|gry|grn|hzl|oth)"
-            r"(hgt):(1[5-7][0-9]|9[0-3]cm)",
-            r"(hgt):(59|6[0-9]|7[[0-6]in)",
-        ]
-    );*/
-    
+    for i in a {
+        if i.is_empty() {
+            if search >= 7 {
+                valid_passports += 1;
+            }
+            search = 0;
+        } else {
+            for cap in re.captures_iter(&i) {
+                match &cap[1] {
+                    "eyr" => search += 1,
+                    "byr" => search += 1,
+                    "iyr" => search += 1,
+                    "hgt" => search += 1,
+                    "hcl" => search += 1,
+                    "ecl" => search += 1,
+                    "pid" => search += 1,
+                    _ => ()
+                }
+            }
+        }
+    }
+    if search >= 7 {
+        valid_passports += 1;
+    }
+    valid_passports
+}
+
+fn solve_pt2(a: Vec<String>) -> usize {
+    let mut search = 0;
+    let mut valid_passports = 0;
+    let re = Regex::new(r"([a-zA-Z]+):([a-zA-Z0-9#]+)").unwrap();
     for i in a {
         if i.is_empty() {
             if search >= 7 {
@@ -86,7 +93,6 @@ fn solve(a: Vec<String>) -> usize {
                         }
                     },
                     _ => ()
-                    
                 }
             }
         }
@@ -97,10 +103,13 @@ fn solve(a: Vec<String>) -> usize {
     valid_passports
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day4.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans)
+        },
         _ => println!("error occurred parsing input")
     };
 }

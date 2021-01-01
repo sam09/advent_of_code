@@ -1,20 +1,6 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day5.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap()
-    } ).collect())
-}
-
+use crate::utils::read_input_string;
 
 fn bin_search(n: i32, row_str: &str, f: char, b: char) -> i32 {
-
     let mut min = 0;
     let mut max = n;
     let mut mid;
@@ -41,7 +27,7 @@ fn find_seat_id(a: String) -> i32 {
     row * 8 + col
 }
 
-fn solve_pt1(a: Vec<String>) {
+fn solve_pt1(a: Vec<String>) -> i32 {
     let mut max_seat_id = 0;
     for i in a {
         let seat_id = find_seat_id(i);
@@ -49,31 +35,31 @@ fn solve_pt1(a: Vec<String>) {
             max_seat_id = seat_id;
         }
     }
-    println!("{}", max_seat_id);
+    max_seat_id
 }
 
-fn solve(a: Vec<String>) {
+fn solve_pt2(a: Vec<String>) -> i32{
     let mut v: Vec<i32>  = Vec::new();
     for i in a {
         v.push(find_seat_id(i));
     }
     v.sort();
-    let min_v = v[0];
-    let max_v = v[v.len() - 1];
-    println!("{} {} {}", min_v, max_v, v.len());
 
     for i in 1..v.len() {
         if (v[i] - 1) != v[i-1]  {
-            println!("{}", v[i] - 1);
-            break;
+            return v[i] - 1;
         }
     }
+    -1
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => solve(values),
+pub fn run(part: char) {
+    let v = read_input_string("data/day5.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans)
+        },
         _ => println!("error occurred parsing input")
     };
 }

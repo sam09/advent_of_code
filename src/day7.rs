@@ -1,23 +1,10 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::{HashMap, VecDeque, HashSet};
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day7.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 struct Graph {
     edges: Vec<Vec<(usize, i32)>>,
     nodes: HashMap<String, usize>,
 }
-
 
 fn remove_whitespace(s: &str) -> String {
     s.chars().filter(|c| !c.is_whitespace()).collect()
@@ -88,7 +75,7 @@ fn create_graph(a: Vec<String>) -> Graph {
     }
 }
 
-fn solve(a: Vec<String>) -> i32 {
+fn solve_pt2(a: Vec<String>) -> i32 {
     let graph = create_graph(a);
     let target_bag = "shinygoldbags";
     let source_index = graph.nodes.get(target_bag).unwrap();
@@ -109,7 +96,7 @@ fn solve(a: Vec<String>) -> i32 {
     fin - 1
 }
 
-fn solve_pt1(a: Vec<String>) -> usize {
+fn solve_pt1(a: Vec<String>) -> i32 {
     let graph = create_rev_graph(a);
     let target_bag = "shinygoldbags";
     let source_index = graph.nodes.get(target_bag).unwrap();
@@ -130,13 +117,16 @@ fn solve_pt1(a: Vec<String>) -> usize {
             None => ()
         }
     }
-    visited.len() - 1 
+    (visited.len() - 1) as i32
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day7.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans)
+        }
         _ => println!("error occurred parsing input")
     };
 }

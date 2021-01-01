@@ -1,9 +1,8 @@
 use std::collections::HashMap;
 
-fn solve(a: Vec<usize>) -> usize {
+fn solve(a: Vec<usize>, g: usize) -> usize {
     let mut turn = a.len()-1;
     let mut map = HashMap::new();
-    let g = 3_000_000;
 
     for i in 0..a.len() - 1 {
         map.insert(a[i], i);
@@ -22,7 +21,8 @@ fn solve(a: Vec<usize>) -> usize {
     last
 }
 
-pub fn run() {
-    let vals = vec![13,0,10,12,1,5,8];
-    println!("{}", solve(vals));
+pub fn run(part: char) {
+    let values = vec![13,0,10,12,1,5,8];
+    let ans = if part == 'a' { solve(values,2020) } else { solve(values, 3_000_000) };
+    println!("{}", ans);
 }

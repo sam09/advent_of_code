@@ -1,23 +1,10 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::HashMap;
-
-fn read_input()-> io::Result<Vec<i64>> {
-    let filename = "./data/day9.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().parse::<i64>().unwrap()
-    } ).collect())
-}
+use crate::utils::read_input_int64;
 
 fn is_valid(a: &i64, set: &HashMap<i64, i64>) -> bool {
     for (i, _) in set {
         let tp = a-*i;
         if set.contains_key(&tp) && ((tp != *i && set[&tp] > 0) || (tp == *i && set[&tp] > 1) ) {
-            //println!("{} {} {}", tp, *i, set[&tp]);
             return true
         }
         
@@ -51,7 +38,7 @@ fn find_first(a: &Vec<i64>) -> i64 {
     -1
 }
 
-fn solve(a: Vec<i64>) -> i64 {
+fn solve_pt2(a: Vec<i64>) -> i64 {
     let smallest = find_first(&a); //393911906
     let mut sum = 0;
     let mut last_index = 0;
@@ -88,15 +75,17 @@ fn solve(a: Vec<i64>) -> i64 {
                 return max + min;
             }
         }
-        //println!("{} {}", last_index, i);
     }
     -1
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_int64("data/day9.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { find_first(&values) } else { solve_pt2(values) };
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

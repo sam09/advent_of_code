@@ -1,16 +1,5 @@
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::HashMap;
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day19.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().chars().collect()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 type RuleId = usize;
 
@@ -24,9 +13,9 @@ enum RuleType {
 #[derive(Debug, Clone)]
 struct Rule {
     rule_id: RuleId,
-    rule: RuleType
+    rule: RuleType,
+    is_recursive: bool,
 }
-
 
 fn and_recursive_11<'a>(map: &HashMap<RuleId, Rule>, input: &'a str, tail: i32) -> Result<&'a str, ()> {
     let mut tp = input.clone();
@@ -79,6 +68,9 @@ fn or<'a>(first: &Vec<RuleId>, second: &Vec<RuleId>, map: &HashMap<RuleId, Rule>
     }
 }
 
+fn create_new_rule(rule: RuleType, rule_id: RuleId) -> Rule {
+    Rule{rule, rule_id, is_recursive: false}
+}
 
 impl Rule {
     fn match_rule<'a>(&self, input: &'a str, map: &HashMap<RuleId, Rule>) -> Result<&'a str, ()> {
@@ -102,7 +94,6 @@ impl Rule {
     }
 }
 
-
 fn parse_rule_id_to_vec(a: &str) -> Vec<RuleId> {
     a.split(" ").map(|a| a.parse::<RuleId>().unwrap()).collect()
 }
@@ -125,10 +116,10 @@ fn parse_rule(a: &str) -> Rule {
             }
         }
     };
-    Rule{rule_id, rule: rule_type}
+    create_new_rule(rule_type, rule_id)
 }
 
-fn solve(a: Vec<String>) -> i64 {
+fn solve(a: Vec<String>, part: char) -> i64 {
     let mut rules = Vec::new();
     let mut map = HashMap::new();
     let mut i = 0;
@@ -138,14 +129,18 @@ fn solve(a: Vec<String>) -> i64 {
             break;
         }
         let mut rule = parse_rule(&a[i]);
-        match rule.rule_id {
-            8 => {
-                rule.rule = RuleType::Complex(vec![42], vec![42, 8]);
-            },
-            11 => {
-                rule.rule = RuleType::Complex(vec![42, 31], vec![42, 11, 31]);
-            },
-            _ => ()
+        if part == 'b' {
+            match rule.rule_id {
+                8 => {
+                    rule.rule = RuleType::Complex(vec![42], vec![42, 8]);
+                    rule.is_recursive = true;
+                },
+                11 => {
+                    rule.rule = RuleType::Complex(vec![42, 31], vec![42, 11, 31]);
+                    rule.is_recursive = true;
+                },
+                _ => ()
+            }
         }
         map.insert(rule.rule_id, rule.clone());
         rules.push(rule);
@@ -159,7 +154,6 @@ fn solve(a: Vec<String>) -> i64 {
             Ok(v) => {
                 if v.is_empty() {
                     valid +=1;
-                    println!("{}", a[i]);
                 }
             }
             Err(_) => (),
@@ -169,10 +163,13 @@ fn solve(a: Vec<String>) -> i64 {
     valid
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day19.txt");
+    match v {
+        Ok(values) =>{
+            let ans = solve(values, part);
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

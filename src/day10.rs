@@ -1,19 +1,6 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
-
-fn read_input()-> io::Result<Vec<i32>> {
-    let filename = "./data/day10.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().parse::<i32>().unwrap()
-    } ).collect())
-}
-
+use crate::utils::read_input_int;
 
 fn f(v: i32, a: &HashSet<i32>, dp: &mut HashMap<i32, i64>) -> i64 {
     if v == 0 {
@@ -31,8 +18,21 @@ fn f(v: i32, a: &HashSet<i32>, dp: &mut HashMap<i32, i64>) -> i64 {
     dp.insert(v, ans);
     ans
 }
+fn solve_pt1(mut a: Vec<i32>) -> i64 {
+    a.sort();
+    let mut ones = 1;
+    let mut threes = 1;
+    for i in 0..a.len()-1 {
+        match a[i+1] - a[i] {
+            1 => ones += 1,
+            3 => threes += 1,
+            _ => ()
+        }
+    }
+    ones * threes
+}
 
-fn solve(mut a: Vec<i32>) -> i64 {
+fn solve_pt2(mut a: Vec<i32>) -> i64 {
     a.sort();
     let max = a[a.len()-1];
     a.push( max + 3);
@@ -41,10 +41,13 @@ fn solve(mut a: Vec<i32>) -> i64 {
     f(max + 3, &set, &mut map)
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_int("data/day10.txt");
+    match v {
+        Ok(values) =>{
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

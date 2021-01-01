@@ -1,17 +1,5 @@
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::HashMap;
-
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day14.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().chars().collect()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 fn overwrite(value: &str, mask: &str) -> i64 {
     let n = mask.len();
@@ -100,7 +88,7 @@ fn all_addresses(address: &str, mask: &str) -> Vec<i64> {
     final_address
 }
 
-fn solve(a: Vec<String>) -> i64 {
+fn solve_pt2(a: Vec<String>) -> i64 {
     let mut mask = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
     let mut map = HashMap::new();
     for i in &a {
@@ -123,10 +111,13 @@ fn solve(a: Vec<String>) -> i64 {
     sum
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day14.txt");
+    match v {
+        Ok(values) =>{
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

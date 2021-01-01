@@ -1,16 +1,5 @@
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::VecDeque;
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day18.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap().chars().collect()
-    } ).collect())
-}
+use crate::utils::read_input_string;
 
 fn is_greater_or_equal(a: &char, b: char) -> bool {
     match a {
@@ -23,7 +12,39 @@ fn is_greater_or_equal(a: &char, b: char) -> bool {
     }
 }
 
-fn get_post_fix(a: &str) -> Vec<char> {
+fn get_post_fix_pt1(a: &str) -> Vec<char> {
+    let mut post_fix = Vec::new();
+    let mut stack = VecDeque::new();
+    for i in a.chars() {
+        if i == '+' || i == '*' {
+            if stack.is_empty() || *stack.front().unwrap() == '('  {
+                stack.push_front(i);
+            } else {
+                while !stack.is_empty() && *stack.front().unwrap() != '(' {
+                    post_fix.push(stack.pop_front().unwrap());
+                }
+                stack.push_front(i);
+            }
+        } else if i == '(' {
+            stack.push_front(i);
+        } else if i == ')' {
+            while stack.front().unwrap() != &'(' {
+                post_fix.push(stack.pop_front().unwrap());
+            }
+            stack.pop_front();
+        } else if i == ' ' {
+            continue;
+        } else {
+            post_fix.push(i);
+        }
+    }
+    while !stack.is_empty() {
+        post_fix.push(stack.pop_front().unwrap());
+    }
+    post_fix
+}
+
+fn get_post_fix_pt2(a: &str) -> Vec<char> {
     let mut post_fix = Vec::new();
     let mut stack = VecDeque::new();
     for i in a.chars() {
@@ -52,13 +73,12 @@ fn get_post_fix(a: &str) -> Vec<char> {
     while !stack.is_empty() {
         post_fix.push(stack.pop_front().unwrap());
     }
-
     post_fix
 }
 
 
-fn eval(a: &str) -> i64 {
-    let post_fix = get_post_fix(a);
+fn eval(a: &str, part: char) -> i64 {
+    let post_fix = if part == 'a' { get_post_fix_pt1(a) } else {get_post_fix_pt2(a) };
     let mut stack = VecDeque::new();
     for i in post_fix {
         if i == '+' {
@@ -71,22 +91,24 @@ fn eval(a: &str) -> i64 {
             stack.push_front(i as i64 - 48);
         }
     }
-    //println!("{}", stack.front().unwrap());
     stack.pop_front().unwrap()
 }
 
-fn solve(a: Vec<String>) -> i64 {
+fn solve(a: Vec<String>, part: char) -> i64 {
     let mut sum = 0;
     for i in &a {
-        sum += eval(i);
+        sum += eval(i, part);
     }
     sum
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day18.txt");
+    match v {
+        Ok(values) =>{
+            let ans = solve(values, part);
+            println!("{}", ans);
+        }
         _ => println!("error occurred parsing input")
     };
 }

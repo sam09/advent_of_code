@@ -1,18 +1,5 @@
-extern crate regex;
-use std::fs::File;
-use std::io::{self, BufReader, BufRead};
 use std::collections::HashSet;
-
-fn read_input()-> io::Result<Vec<String>> {
-    let filename = "./data/day6.txt";
-    let file = File::open(filename)?;
-    let lines = BufReader::new(file).lines();
-
-    Ok(lines.map( |a| {
-        a.unwrap()
-    } ).collect())
-}
-
+use crate::utils::read_input_string;
 
 fn solve_pt1(a: Vec<String>) -> usize {
     let mut set:HashSet<char> = HashSet::new();
@@ -31,7 +18,7 @@ fn solve_pt1(a: Vec<String>) -> usize {
 }
 
 
-fn solve(a: Vec<String>) -> usize {
+fn solve_pt2(a: Vec<String>) -> usize {
     let mut v = vec![0; 26];
     let mut members = 0;
     let mut sum = 0;
@@ -57,14 +44,16 @@ fn solve(a: Vec<String>) -> usize {
             sum += 1;
         }
     }
-
     sum
 }
 
-pub fn run() {
-    let vals = read_input();
-    match vals {
-        Ok(values) => println!("{}", solve(values)),
+pub fn run(part: char) {
+    let v = read_input_string("data/day6.txt");
+    match v {
+        Ok(values) => {
+            let ans = if part == 'a' { solve_pt1(values) } else { solve_pt2(values) };
+            println!("{}", ans)
+        }
         _ => println!("error occurred parsing input")
     };
 }
