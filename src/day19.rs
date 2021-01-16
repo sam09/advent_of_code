@@ -84,7 +84,7 @@ impl Rule {
             },
             RuleType::Compound(v) => and(&v, map, input),
             RuleType::Complex(a, b) => {
-                return if self.rule_id == 11 {
+                return if self.rule_id == 11 && self.is_recursive == true {
                     and_recursive_11(map, input, 0)
                 } else {
                     or(&a, &b, map, input)
