@@ -32,7 +32,7 @@ fn solve_pt2(a: Vec<String>) {
         match temp[0] {
             "forward" => {
                 h += val;
-                v += (aim * val)
+                v += aim * val;
             },
             "down" => aim += val,
             "up" => aim -= val,

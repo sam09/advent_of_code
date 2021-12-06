@@ -3,6 +3,7 @@ use std::process;
 
 mod day1;
 mod day2;
+mod day3;
 mod utils;
 
 fn print_help() {
@@ -13,6 +14,7 @@ fn run(a: i32, part: char) {
     match a {
         1 => day1::run(part),
         2 => day2::run(part),
+        3 => day3::run(part),
         _ => println!("Not found")
     }
 }
