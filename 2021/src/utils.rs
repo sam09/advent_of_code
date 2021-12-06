@@ -39,3 +39,7 @@ pub fn read_input_char_vec(filename: &str)-> io::Result<Vec<Vec<char>>> {
         a.unwrap().chars().collect()
     } ).collect())
 }
+
+pub fn convert_string_to_int_vec(a: &String, delimiter: char) -> Vec<i32> {
+    a.trim().split(delimiter).filter(|x| !x.is_empty()).map(|x| x.parse::<i32>().unwrap()).collect::<Vec<i32>>()
+}
