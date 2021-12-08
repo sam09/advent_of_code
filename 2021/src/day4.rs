@@ -16,7 +16,6 @@ fn get_grids(a: &Vec<String>, n: usize) -> Vec<Vec<Vec<i32>>> {
     }
     if tp.len() != 0 {
         grids.push(tp);
-        tp = Vec::new();
     }
     grids
 }
