@@ -8,6 +8,7 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
+mod day8;
 mod utils;
 
 fn print_help() {
@@ -23,6 +24,7 @@ fn run(a: i32, part: char) {
         5 => day5::run(part),
         6 => day6::run(part),
         7 => day7::run(part),
+        8 => day8::run(part),
         _ => println!("Not found")
     }
 }
