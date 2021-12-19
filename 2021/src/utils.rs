@@ -40,6 +40,17 @@ pub fn read_input_char_vec(filename: &str)-> io::Result<Vec<Vec<char>>> {
     } ).collect())
 }
 
+pub fn read_input_2d_vec(filename: &str)-> io::Result<Vec<Vec<i32>>> {
+    let file = File::open(filename)?;
+    let lines = BufReader::new(file).lines();
+
+    Ok(lines.map( |a| {
+        a.unwrap().chars().map( |x| {
+            x.to_digit(10).unwrap() as i32
+        }).collect::<Vec<i32>>()
+    }).collect::<Vec<Vec<i32>>>())
+}
+
 pub fn convert_string_to_int_vec(a: &String, delimiter: char) -> Vec<i32> {
     a.trim().split(delimiter).filter(|x| !x.is_empty()).map(|x| x.parse::<i32>().unwrap()).collect::<Vec<i32>>()
 }
